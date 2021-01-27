@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  
+  inmemory:
+    image: mongo:4.4.2
+    container_name: inmemory
+    volumes:
+      - ./keyfile:/keyfile
+    tmpfs:
+      - /data/db
+    command: "--bind_ip_all --keyFile /keyfile --replSet rs0 --wiredTigerCacheSizeGB 0"
+    restart: always
+    ports:
+      - 27018:27017
+
+  backup:
+    image: mongo:4.4.2
+    container_name: backup
+    volumes:
+      - ./data/backup:/data/db
+      - ./keyfile:/keyfile
+    command: "--bind_ip_all --keyFile /keyfile --replSet rs0"
+    restart: always
+    ports:
+      - 27019:27017
